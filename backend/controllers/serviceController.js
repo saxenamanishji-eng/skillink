@@ -264,19 +264,24 @@ export const updateService = async (req, res, next) => {
       is_active
     } = req.body;
 
-    // Check ownership
+    // Check ownership via user_skills join
     const [svcRows] = await pool.query(
-      `SELECT svc.id FROM services svc
+      `SELECT svc.id, us.user_id 
+       FROM services svc
        JOIN user_skills us ON svc.user_skill_id = us.id
-       WHERE svc.id = ? AND us.user_id = ?`,
-      [serviceId, userId]
+       WHERE svc.id = ?`,
+      [serviceId]
     );
 
-    if (svcRows.length === 0 && req.user.role !== 'admin') {
+    if (svcRows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Service offering not found.' });
+    }
+
+    if (svcRows[0].user_id !== userId && req.user.role !== 'admin') {
       return res.status(403).json({ success: false, message: 'You do not have permission to modify this service.' });
     }
 
-    await pool.query(
+    const [updateResult] = await pool.query(
       `UPDATE services
        SET category = COALESCE(?, category),
            title = COALESCE(?, title),
@@ -294,8 +299,8 @@ export const updateService = async (req, res, next) => {
         title ? title.trim() : null,
         description !== undefined ? description : null,
         pricing_type || null,
-        price !== undefined ? parseFloat(price) : null,
-        duration_minutes !== undefined ? parseInt(duration_minutes, 10) : null,
+        price !== undefined && price !== '' ? parseFloat(price) : null,
+        duration_minutes !== undefined && duration_minutes !== '' ? parseInt(duration_minutes, 10) : null,
         online_available !== undefined ? Boolean(online_available) : null,
         in_person_available !== undefined ? Boolean(in_person_available) : null,
         is_active !== undefined ? Boolean(is_active) : null,

@@ -12,7 +12,7 @@
 |---|---|---|---|
 | **Phase 1** | Environment + Project Skeleton | **Completed** | MySQL 8.0.46 confirmed, Node.js + Express backend, React Vite frontend configured. |
 | **Phase 2** | Migrations, Seed, Auth & Middleware | **Completed** | 5 SQL migrations applied, demo dataset seeded, JWT with live DB status checks, 1:1 `user_private` table. |
-| **Phase 3** | Profile, Privacy Serializer, QR System | **Completed** | `toPublicProfile` serializer, avatar upload via multer, QR profile generation & QR camera/file scanner. |
+| **Phase 3** | Profile, Privacy Serializer, Public Profiles | **Completed** | `toPublicProfile` serializer, avatar upload via multer, public profile discovery and sharing. |
 | **Phase 4** | Connections, Blocks, Endorsements, Notifications | **Completed** | Symmetrical `pair_key` unique constraint, connection lifecycle, blocking, skill endorsements, notifications. |
 | **Phase 5** | Discovery & SQL Search Ranking | **Completed** | Discover users & services with multi-param SQL search (query, category, maxRate, minRating). |
 | **Phase 6** | Services, Availability, Booking Transactions, Reviews | **Completed** | Weekly schedule availability, double-booking prevention with `SELECT ... FOR UPDATE`, 1:1 post-completion reviews. |

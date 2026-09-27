@@ -25,8 +25,8 @@
 - The `admin_audit_logs` table records every administrative modification (user suspension, skill approval/rejection, content removal, ticket resolution).
 - The application exposes **zero** `UPDATE` or `DELETE` endpoints for audit logs, ensuring tamper-evident history.
 
-## 6. QR Code Security & Safe Navigation
-- Scanned text is strictly validated using URL parsing (`new URL()`).
+## 6. Profile URL Validation & Safe Navigation
+- Profile URLs and share links are strictly validated using URL parsing (`new URL()`).
 - The application checks:
   1. Protocol must be `http:` or `https:`.
   2. Hostname must match the configured application origin.

@@ -58,7 +58,7 @@ export const Connections = () => {
         <div>
           <h1 style={{ fontSize: '1.75rem' }}>My Peer Network</h1>
           <p style={{ color: 'var(--color-text-muted)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-            Collaborators you have connected with in-person or via QR scanning
+            Collaborators you have connected with across your campus
           </p>
         </div>
         <Link to="/discover" className="btn btn-primary btn-sm">+ Find New Peers</Link>
@@ -148,7 +148,7 @@ export const Connections = () => {
           <div className="state-container">
             <div className="icon">🤝</div>
             <h3>No Connections Yet</h3>
-            <p>Scan a peer's QR code or discover students across your university to start connecting.</p>
+            <p>Discover students across your university or share your profile link to start connecting.</p>
             <Link to="/discover" className="btn btn-primary btn-sm">Discover Peers</Link>
           </div>
         )
@@ -191,7 +191,7 @@ export const Connections = () => {
           <div className="state-container">
             <div className="icon">📥</div>
             <h3>No Pending Received Requests</h3>
-            <p>When peers scan your QR code or send you a connection request, they will appear here.</p>
+            <p>When peers send you a connection request, they will appear here.</p>
           </div>
         )
       ) : (

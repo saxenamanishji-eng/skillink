@@ -32,14 +32,72 @@ export const ServiceDetails = () => {
   const [complaintDesc, setComplaintDesc] = useState('');
   const [complaintSuccess, setComplaintSuccess] = useState('');
 
+  // Edit Service Modal State
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    description: '',
+    category: 'Tutoring',
+    pricing_type: 'hourly',
+    price: '',
+    duration_minutes: '60',
+    online_available: true,
+    in_person_available: false,
+    is_active: true
+  });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
+  const [editSuccess, setEditSuccess] = useState('');
+
+  const fetchServiceDetails = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`/services/${id}`);
+      if (res.success && res.service) {
+        setService(res.service);
+        setEditForm({
+          title: res.service.title || '',
+          description: res.service.description || '',
+          category: res.service.category || 'Tutoring',
+          pricing_type: res.service.pricing_type || 'hourly',
+          price: res.service.price || '',
+          duration_minutes: res.service.duration_minutes || '60',
+          online_available: Boolean(res.service.online_available),
+          in_person_available: Boolean(res.service.in_person_available),
+          is_active: Boolean(res.service.is_active)
+        });
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    api.get(`/services/${id}`)
-      .then(res => {
-        if (res.success) setService(res.service);
-      })
-      .catch(err => setError(err.message))
-      .finally(() => setLoading(false));
+    fetchServiceDetails();
   }, [id]);
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    setEditError('');
+    setEditLoading(true);
+    try {
+      const res = await api.put(`/services/${id}`, editForm);
+      if (res.success) {
+        setEditSuccess('Service updated successfully!');
+        setTimeout(() => {
+          setEditModalOpen(false);
+          setEditSuccess('');
+          fetchServiceDetails();
+        }, 1200);
+      }
+    } catch (err) {
+      setEditError(err.message || 'Failed to update service.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
 
   const handleBookingSubmit = async (e) => {
     e.preventDefault();
@@ -191,7 +249,7 @@ export const ServiceDetails = () => {
         </div>
 
         {/* Action Controls */}
-        <div className="flex-between" style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem' }}>
+        <div className="flex-between" style={{ borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem', gap: '0.75rem', flexWrap: 'wrap' }}>
           <button onClick={() => setComplaintModalOpen(true)} className="btn btn-secondary btn-sm" style={{ color: 'var(--color-error)' }}>
             ⚠️ Report Issue / Complaint
           </button>
@@ -201,9 +259,14 @@ export const ServiceDetails = () => {
               🗓️ Request Booking Session
             </button>
           ) : (
-            <span className="badge badge-neutral" style={{ padding: '0.5rem 1rem' }}>
-              You own this service offering
-            </span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <span className="badge badge-neutral" style={{ padding: '0.5rem 1rem' }}>
+                You own this service offering
+              </span>
+              <button onClick={() => setEditModalOpen(true)} className="btn btn-primary">
+                ✏️ Edit Service Offering
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -364,6 +427,137 @@ export const ServiceDetails = () => {
             </div>
           </form>
         )}
+      </Modal>
+      {/* Edit Service Modal */}
+      <Modal
+        isOpen={editModalOpen}
+        onClose={() => setEditModalOpen(false)}
+        title="Edit Service Offering"
+        footer={
+          <>
+            <button onClick={() => setEditModalOpen(false)} className="btn btn-secondary">Cancel</button>
+            <button onClick={handleEditSubmit} className="btn btn-primary" disabled={editLoading}>
+              {editLoading ? 'Saving Changes...' : 'Save Changes'}
+            </button>
+          </>
+        }
+      >
+        {editError && <div className="alert alert-error">{editError}</div>}
+        {editSuccess && <div className="alert alert-success">{editSuccess}</div>}
+
+        <form onSubmit={handleEditSubmit}>
+          <div className="form-group">
+            <label>Service Title *</label>
+            <input
+              type="text"
+              placeholder="e.g. 1-on-1 React & Architecture Mentoring"
+              value={editForm.title}
+              onChange={(e) => setEditForm({ ...editForm, title: e.target.value })}
+              required
+            />
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Category *</label>
+              <select
+                value={editForm.category}
+                onChange={(e) => setEditForm({ ...editForm, category: e.target.value })}
+              >
+                <option value="Tutoring">Tutoring</option>
+                <option value="Consulting">Consulting</option>
+                <option value="Freelancing">Freelancing</option>
+                <option value="Mentoring">Mentoring</option>
+                <option value="Design">Design</option>
+                <option value="Development">Development</option>
+                <option value="Academic Help">Academic Help</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Pricing Model *</label>
+              <select
+                value={editForm.pricing_type}
+                onChange={(e) => setEditForm({ ...editForm, pricing_type: e.target.value })}
+              >
+                <option value="hourly">Hourly Rate</option>
+                <option value="per_session">Per Session</option>
+                <option value="fixed_project">Fixed Project</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="form-row">
+            <div className="form-group">
+              <label>Price in INR (₹) *</label>
+              <input
+                type="number"
+                placeholder="450"
+                min="0"
+                step="50"
+                value={editForm.price}
+                onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
+                required
+              />
+              <span className="form-helper">Paid in cash directly upon delivery</span>
+            </div>
+
+            <div className="form-group">
+              <label>Typical Duration (Minutes)</label>
+              <input
+                type="number"
+                placeholder="60"
+                min="15"
+                step="15"
+                value={editForm.duration_minutes}
+                onChange={(e) => setEditForm({ ...editForm, duration_minutes: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Service Description</label>
+            <textarea
+              rows="3"
+              placeholder="Explain what topics or deliverables you cover during a session..."
+              value={editForm.description}
+              onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+            />
+          </div>
+
+          <div style={{ display: 'flex', gap: '1.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={editForm.online_available}
+                onChange={(e) => setEditForm({ ...editForm, online_available: e.target.checked })}
+                style={{ width: 'auto' }}
+              />
+              Online Sessions
+            </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={editForm.in_person_available}
+                onChange={(e) => setEditForm({ ...editForm, in_person_available: e.target.checked })}
+                style={{ width: 'auto' }}
+              />
+              In-Person Sessions
+            </label>
+
+            <label style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', cursor: 'pointer' }}>
+              <input
+                type="checkbox"
+                checked={editForm.is_active}
+                onChange={(e) => setEditForm({ ...editForm, is_active: e.target.checked })}
+                style={{ width: 'auto' }}
+              />
+              Listing Active (Visible in Catalog)
+            </label>
+          </div>
+        </form>
       </Modal>
     </div>
   );

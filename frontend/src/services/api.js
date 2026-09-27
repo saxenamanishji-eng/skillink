@@ -11,6 +11,12 @@ export async function apiRequest(endpoint, options = {}) {
     'Accept': 'application/json'
   };
 
+  // Attach stored JWT token if present for dual-transport (cookies + Authorization header)
+  const storedToken = typeof localStorage !== 'undefined' ? localStorage.getItem('skilllink_token') : null;
+  if (storedToken) {
+    defaultHeaders['Authorization'] = `Bearer ${storedToken}`;
+  }
+
   // Don't set Content-Type if sending FormData (let browser set multipart/form-data boundary)
   if (!(options.body instanceof FormData)) {
     defaultHeaders['Content-Type'] = 'application/json';

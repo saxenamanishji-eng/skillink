@@ -19,8 +19,6 @@ import EditProfile from './pages/EditProfile.jsx';
 import Discover from './pages/Discover.jsx';
 import Connections from './pages/Connections.jsx';
 import Skills from './pages/Skills.jsx';
-import QRProfile from './pages/QRProfile.jsx';
-import QRScanner from './pages/QRScanner.jsx';
 import Services from './pages/Services.jsx';
 import ServiceDetails from './pages/ServiceDetails.jsx';
 import Availability from './pages/Availability.jsx';
@@ -34,6 +32,9 @@ import TicketDetails from './pages/TicketDetails.jsx';
 import Help from './pages/Help.jsx';
 import HelpArticle from './pages/HelpArticle.jsx';
 import Notifications from './pages/Notifications.jsx';
+
+// Component Loading Helper
+import Skeleton from './components/Skeleton.jsx';
 
 // Admin Pages
 import AdminLayout from './admin/AdminLayout.jsx';
@@ -53,13 +54,25 @@ import AdminAuditLogs from './admin/AdminAuditLogs.jsx';
 // Route Guards
 const ProtectedUserRoute = () => {
   const { user, loading } = useAuth();
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div style={{ padding: '3rem', maxWidth: '800px', margin: '0 auto' }}>
+        <Skeleton height="140px" count={3} />
+      </div>
+    );
+  }
   return user ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 const ProtectedAdminRoute = () => {
   const { user, loading, isAdmin } = useAuth();
-  if (loading) return null;
+  if (loading) {
+    return (
+      <div style={{ padding: '3rem', maxWidth: '800px', margin: '0 auto' }}>
+        <Skeleton height="140px" count={3} />
+      </div>
+    );
+  }
   if (!user) return <Navigate to="/login" replace />;
   if (!isAdmin) return <Navigate to="/dashboard" replace />;
   return <Outlet />;
@@ -108,8 +121,6 @@ export const App = () => {
               <Route path="/edit-profile" element={<EditProfile />} />
               <Route path="/connections" element={<Connections />} />
               <Route path="/skills" element={<Skills />} />
-              <Route path="/qr-profile" element={<QRProfile />} />
-              <Route path="/qr-scanner" element={<QRScanner />} />
               <Route path="/availability" element={<Availability />} />
               <Route path="/bookings" element={<Bookings />} />
               <Route path="/complaints" element={<Complaints />} />

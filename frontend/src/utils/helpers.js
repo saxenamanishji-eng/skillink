@@ -37,10 +37,10 @@ export const formatTime = (timeString) => {
 };
 
 /**
- * QR URL validation strictly adhering to Section 10
+ * Profile URL validation strictly adhering to SkillLink profile patterns
  * Accepts only http/https, matches current origin/domain, matches path ^/u/[a-z0-9_]{3,30}/?$
  */
-export const validateScannedQRUrl = (text) => {
+export const validateProfileUrl = (text) => {
   try {
     const url = new URL(text, window.location.origin);
     if (!['http:', 'https:'].includes(url.protocol)) {
@@ -58,3 +58,4 @@ export const validateScannedQRUrl = (text) => {
     return { valid: false, reason: 'Invalid URL format' };
   }
 };
+

@@ -1,32 +1,28 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-dotenv.config({ path: path.join(__dirname, '../backend/.env') });
-
 const dbConfig = {
-  host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306', 10),
-  user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
-  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '123456',
-  database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'skilllink_db',
+  host: process.env.DB_HOST || 'thomas.proxy.rlwy.net',
+  port: parseInt(process.env.DB_PORT || '33561', 10),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'WPjhUGzOxVhzrBwVbYmtsSLvveuMEfDA',
+  database: process.env.DB_NAME || 'railway',
   multipleStatements: true
 };
 
 async function seedDatabase() {
-  console.log('Starting SkillLink database seeding...');
+  console.log('Starting SkillLink database seeding on Railway MySQL...');
   let connection;
 
   try {
     connection = await mysql.createConnection(dbConfig);
-    console.log('Connected to MySQL. Clearing existing demo data...');
+    console.log('Connected to Railway MySQL. Clearing existing demo data...');
 
-    // Disable foreign key checks for clean truncation/deletion
     await connection.query('SET FOREIGN_KEY_CHECKS = 0');
     const tables = [
       'admin_audit_logs', 'helpdesk_attachments', 'helpdesk_messages', 'helpdesk_tickets',
@@ -41,11 +37,10 @@ async function seedDatabase() {
     }
     await connection.query('SET FOREIGN_KEY_CHECKS = 1');
 
-    console.log('Inserting seed users...');
+    console.log('Inserting seed users on Railway...');
     const salt = await bcrypt.genSalt(10);
     const commonHash = await bcrypt.hash('Password123!', salt);
 
-    // 1. Users
     const users = [
       {
         username: 'admin_user',
@@ -191,48 +186,40 @@ async function seedDatabase() {
     );
 
     console.log('Creating initial connections...');
-    // Alice & Bob connected
     await connection.query(
       `INSERT INTO connections (requester_id, receiver_id, status, where_we_met) VALUES (?, ?, 'accepted', 'DTU Hackathon 2024')`,
       [userMap['alice_tech'], userMap['bob_coder']]
     );
-    // Bob & Charlie connected
     await connection.query(
       `INSERT INTO connections (requester_id, receiver_id, status, where_we_met) VALUES (?, ?, 'accepted', 'Smart India Hackathon Finalist Group')`,
       [userMap['bob_coder'], userMap['charlie_data']]
     );
-    // Diana sent connection to Alice (pending)
     await connection.query(
       `INSERT INTO connections (requester_id, receiver_id, status, where_we_met) VALUES (?, ?, 'pending', 'Women in Tech Delhi Meetup')`,
       [userMap['diana_design'], userMap['alice_tech']]
     );
 
     console.log('Adding endorsements...');
-    // Bob endorses Alice for React
     await connection.query(
       `INSERT INTO endorsements (from_user_id, to_user_id, skill_id, rating, message) VALUES (?, ?, ?, 10, 'Outstanding React developer and architect. Built frontend in record time during Hackathon!')`,
       [userMap['bob_coder'], userMap['alice_tech'], skillMap['React Development']]
     );
-    // Alice endorses Bob for DSA
     await connection.query(
       `INSERT INTO endorsements (from_user_id, to_user_id, skill_id, rating, message) VALUES (?, ?, ?, 9, 'Brilliant algorithm problem solver and competitive coder.')`,
       [userMap['alice_tech'], userMap['bob_coder'], skillMap['DSA & Algorithms']]
     );
 
     console.log('Creating bookable services...');
-    // Alice: React Tutoring
     const [svc1] = await connection.query(
       `INSERT INTO services (user_skill_id, category, title, description, pricing_type, price, currency, duration_minutes, online_available, in_person_available, is_active)
        VALUES (?, 'Tutoring', '1-on-1 React & Vite Architecture Mentoring', 'Comprehensive session covering component lifecycles, hooks, context API, and routing setup.', 'hourly', 450.00, 'INR', 60, TRUE, TRUE, TRUE)`,
       [userSkillMap['alice_tech_React Development']]
     );
-    // Diana: UI/UX Redesign
     const [svc2] = await connection.query(
       `INSERT INTO services (user_skill_id, category, title, description, pricing_type, price, currency, duration_minutes, online_available, in_person_available, is_active)
        VALUES (?, 'Design', 'App & Web UI/UX Review and Wireframing', 'Heuristic review of your interface, typography consistency, and Figma design tokens advice.', 'per_session', 800.00, 'INR', 90, TRUE, FALSE, TRUE)`,
       [userSkillMap['diana_design_UI/UX Interface Design']]
     );
-    // Charlie: SQL Optimization
     const [svc3] = await connection.query(
       `INSERT INTO services (user_skill_id, category, title, description, pricing_type, price, currency, duration_minutes, online_available, in_person_available, is_active)
        VALUES (?, 'Consulting', 'MySQL Query & Schema Optimization Consulting', 'Deep-dive analysis of EXPLAIN execution plans, index tuning, and normalization advice.', 'hourly', 600.00, 'INR', 60, TRUE, FALSE, TRUE)`,
@@ -240,7 +227,6 @@ async function seedDatabase() {
     );
 
     console.log('Setting availability schedules...');
-    // Alice available Monday (1), Wednesday (3), Friday (5) from 14:00 to 18:00
     await connection.query(
       `INSERT INTO availability (provider_id, day_of_week, start_time, end_time, is_available) VALUES
        (?, 1, '14:00:00', '18:00:00', TRUE),
@@ -248,7 +234,6 @@ async function seedDatabase() {
        (?, 5, '14:00:00', '18:00:00', TRUE)`,
       [userMap['alice_tech'], userMap['alice_tech'], userMap['alice_tech']]
     );
-    // Charlie available Saturday (6) and Sunday (0)
     await connection.query(
       `INSERT INTO availability (provider_id, day_of_week, start_time, end_time, is_available) VALUES
        (?, 6, '10:00:00', '16:00:00', TRUE),
@@ -257,20 +242,17 @@ async function seedDatabase() {
     );
 
     console.log('Creating sample bookings and reviews...');
-    // Past completed booking: Bob booked Alice
     const [bk1] = await connection.query(
       `INSERT INTO bookings (service_id, customer_id, provider_id, booking_date, start_time, end_time, mode, status, notes, price, currency, responded_at, completed_at)
        VALUES (?, ?, ?, '2026-03-15', '14:00:00', '15:00:00', 'online', 'completed', 'Help understanding React context and custom hooks.', 450.00, 'INR', '2026-03-14 10:00:00', '2026-03-15 15:30:00')`,
       [svc1.insertId, userMap['bob_coder'], userMap['alice_tech']]
     );
-    // Review for past completed booking
     await connection.query(
       `INSERT INTO reviews (booking_id, reviewer_id, provider_id, rating, comment)
        VALUES (?, ?, ?, 5, 'Exceptional mentor! Alice broke down state management concepts so clearly. Highly recommend for any BTech student.')`,
       [bk1.insertId, userMap['bob_coder'], userMap['alice_tech']]
     );
 
-    // Upcoming confirmed booking: Charlie booked Alice
     await connection.query(
       `INSERT INTO bookings (service_id, customer_id, provider_id, booking_date, start_time, end_time, mode, status, notes, price, currency, responded_at)
        VALUES (?, ?, ?, '2026-10-12', '16:00:00', '17:00:00', 'online', 'confirmed', 'Reviewing front-end dashboard components integration.', 450.00, 'INR', NOW())`,
@@ -376,7 +358,7 @@ async function seedDatabase() {
       [userMap['admin_user']]
     );
 
-    console.log('Database seeded successfully with all demo users, skills, services, bookings, and articles!');
+    console.log('Railway MySQL database seeded successfully with all 22 tables and demo records!');
   } catch (error) {
     console.error('Database seeding failed with error:', error);
     process.exit(1);

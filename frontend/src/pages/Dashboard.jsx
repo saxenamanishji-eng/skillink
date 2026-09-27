@@ -68,8 +68,8 @@ export const Dashboard = () => {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <Link to="/qr-profile" className="btn btn-secondary">
-              📱 Show My QR
+            <Link to="/services" className="btn btn-secondary">
+              💼 Browse Services
             </Link>
             <Link to="/discover" className="btn btn-primary">
               🔍 Discover Peers
@@ -198,8 +198,8 @@ export const Dashboard = () => {
               <Link to="/availability" className="btn btn-secondary btn-sm" style={{ justifyContent: 'flex-start' }}>
                 📅 Set Weekly Availability
               </Link>
-              <Link to="/qr-scanner" className="btn btn-secondary btn-sm" style={{ justifyContent: 'flex-start' }}>
-                📷 Scan In-Person QR Code
+              <Link to="/connections" className="btn btn-secondary btn-sm" style={{ justifyContent: 'flex-start' }}>
+                🤝 Manage Connections
               </Link>
               <Link to="/helpdesk" className="btn btn-secondary btn-sm" style={{ justifyContent: 'flex-start' }}>
                 💬 Contact Helpdesk Support

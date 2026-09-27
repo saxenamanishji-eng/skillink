@@ -38,7 +38,7 @@ export const Help = () => {
       <div style={{ textAlign: 'center', maxWidth: '640px', margin: '0 auto 2.5rem' }}>
         <h1 style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>SkillLink Help & Knowledge Base</h1>
         <p style={{ color: 'var(--color-text-muted)', fontSize: '0.95rem', marginBottom: '1.5rem' }}>
-          Guides and official documentation on networking, QR profiles, booking cash services, and platform policies.
+          Guides and official documentation on networking, peer connections, booking cash services, and platform policies.
         </p>
 
         {/* Search Input */}

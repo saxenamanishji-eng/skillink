@@ -21,13 +21,16 @@ export const AuthProvider = ({ children }) => {
   // Verify active session on load
   const refreshUser = async () => {
     try {
+      setLoading(true);
       const data = await api.get('/auth/me');
       if (data.success && data.user) {
         setUser(data.user);
       } else {
+        localStorage.removeItem('skilllink_token');
         setUser(null);
       }
     } catch {
+      localStorage.removeItem('skilllink_token');
       setUser(null);
     } finally {
       setLoading(false);
@@ -41,6 +44,9 @@ export const AuthProvider = ({ children }) => {
   const login = async (identifier, password) => {
     const data = await api.post('/auth/login', { identifier, password });
     if (data.success && data.user) {
+      if (data.token) {
+        localStorage.setItem('skilllink_token', data.token);
+      }
       setUser(data.user);
     }
     return data;
@@ -49,6 +55,9 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     const data = await api.post('/auth/register', userData);
     if (data.success && data.user) {
+      if (data.token) {
+        localStorage.setItem('skilllink_token', data.token);
+      }
       setUser(data.user);
     }
     return data;
@@ -60,6 +69,7 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       console.warn('Logout API error:', err);
     } finally {
+      localStorage.removeItem('skilllink_token');
       setUser(null);
     }
   };

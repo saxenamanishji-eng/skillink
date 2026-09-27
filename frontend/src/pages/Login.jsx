@@ -32,19 +32,6 @@ export const Login = () => {
     }
   };
 
-  const handleDemoFill = (type) => {
-    if (type === 'admin') {
-      setIdentifier('admin_user');
-      setPassword('Password123!');
-    } else if (type === 'alice') {
-      setIdentifier('alice_tech');
-      setPassword('Password123!');
-    } else if (type === 'bob') {
-      setIdentifier('bob_coder');
-      setPassword('Password123!');
-    }
-  };
-
   return (
     <div style={{ maxWidth: '440px', margin: '3rem auto', padding: '0 1rem' }}>
       <div className="card" style={{ padding: '2rem' }}>
@@ -89,24 +76,6 @@ export const Login = () => {
             {loading ? 'Authenticating...' : 'Log In'}
           </button>
         </form>
-
-        {/* Demo Account Quick Buttons */}
-        <div style={{ marginTop: '1.75rem', borderTop: '1px solid var(--color-border)', paddingTop: '1.25rem' }}>
-          <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--color-text-muted)', marginBottom: '0.5rem', textAlign: 'center', textTransform: 'uppercase' }}>
-            Quick Demo Logins (Viva Testing)
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
-            <button onClick={() => handleDemoFill('alice')} className="btn btn-secondary btn-sm" style={{ fontSize: '0.75rem' }}>
-              👩 Alice
-            </button>
-            <button onClick={() => handleDemoFill('bob')} className="btn btn-secondary btn-sm" style={{ fontSize: '0.75rem' }}>
-              👨 Bob
-            </button>
-            <button onClick={() => handleDemoFill('admin')} className="btn btn-secondary btn-sm" style={{ fontSize: '0.75rem' }}>
-              🛡️ Admin
-            </button>
-          </div>
-        </div>
 
         <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
           Don't have an account? <Link to="/signup" style={{ fontWeight: 600 }}>Create an account</Link>

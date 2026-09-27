@@ -178,7 +178,7 @@ export const AdminHelpCenter = () => {
             <label>Article Title *</label>
             <input
               type="text"
-              placeholder="e.g. How to Connect via Permanent QR Code"
+              placeholder="e.g. How to Connect with Peers"
               value={articleForm.title}
               onChange={(e) => {
                 const title = e.target.value;
@@ -197,7 +197,7 @@ export const AdminHelpCenter = () => {
               <label>URL Slug *</label>
               <input
                 type="text"
-                placeholder="e.g. how-to-connect-qr"
+                placeholder="e.g. how-to-connect-peers"
                 value={articleForm.slug}
                 onChange={(e) => setArticleForm({ ...articleForm, slug: e.target.value.toLowerCase().replace(/[^a-z0-9_-]/g, '') })}
                 required

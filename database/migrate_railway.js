@@ -2,33 +2,28 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
-import dotenv from 'dotenv';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Load env from backend/.env
-dotenv.config({ path: path.join(__dirname, '../backend/.env') });
-
 const dbConfig = {
-  host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306', 10),
-  user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
-  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '123456',
-  database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'skilllink_db',
+  host: process.env.DB_HOST || 'thomas.proxy.rlwy.net',
+  port: parseInt(process.env.DB_PORT || '33561', 10),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'WPjhUGzOxVhzrBwVbYmtsSLvveuMEfDA',
+  database: process.env.DB_NAME || 'railway',
   multipleStatements: true
 };
 
 async function runMigrations() {
-  console.log('Starting SkillLink database migrations...');
-  console.log(`Connecting to MySQL on ${dbConfig.host}:${dbConfig.port}, database: ${dbConfig.database}`);
+  console.log('Starting SkillLink database migrations on Railway MySQL...');
+  console.log(`Connecting to ${dbConfig.host}:${dbConfig.port}, database: ${dbConfig.database}`);
 
   let connection;
   try {
     connection = await mysql.createConnection(dbConfig);
-    console.log('Successfully connected to MySQL server.');
+    console.log('Successfully connected to Railway MySQL server.');
 
-    // Ensure migrations table exists to track executed migrations
     await connection.query(`
       CREATE TABLE IF NOT EXISTS schema_migrations (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,7 +53,7 @@ async function runMigrations() {
       console.log(`[SUCCESS] Migration ${file} applied successfully.`);
     }
 
-    console.log('All migrations completed successfully.');
+    console.log('All migrations completed successfully on Railway MySQL!');
   } catch (error) {
     console.error('Migration failed with error:', error);
     process.exit(1);

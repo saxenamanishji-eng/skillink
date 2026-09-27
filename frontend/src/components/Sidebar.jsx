@@ -15,8 +15,6 @@ export const Sidebar = () => {
     { to: '/services', label: 'Services', icon: '💼' },
     { to: '/availability', label: 'Availability', icon: '📅' },
     { to: '/bookings', label: 'Bookings', icon: '🗓️' },
-    { to: '/qr-profile', label: 'My QR Code', icon: '📱' },
-    { to: '/qr-scanner', label: 'Scan QR Code', icon: '📷' },
     { to: '/helpdesk', label: 'Helpdesk Support', icon: '💬' },
     { to: '/complaints', label: 'Complaints', icon: '⚠️' },
     { to: '/help', label: 'Knowledge Base', icon: '📖' },

@@ -33,5 +33,5 @@ ORDER BY booking_date ASC, start_time ASC;
 SELECT id, title, slug, category, published_at
 FROM help_articles
 WHERE status = 'published'
-  AND (title LIKE '%QR%' OR content LIKE '%QR%')
+  AND (title LIKE '%Skills%' OR content LIKE '%Skills%')
 ORDER BY published_at DESC;

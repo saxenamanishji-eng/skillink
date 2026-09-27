@@ -289,7 +289,13 @@ export const PublicProfile = () => {
 
           <div className="grid-cols-2">
             {profile.services.map((svc) => (
-              <ServiceCard key={svc.id} service={{ ...svc, provider_name: profile.full_name, provider_username: profile.username }} />
+              <ServiceCard
+                key={svc.id}
+                service={{ ...svc, provider_name: profile.full_name, provider_username: profile.username }}
+                isOwner={isOwner}
+                currentUserId={currentUser?.id}
+                onEdit={(service) => window.location.href = `/services/${service.id}`}
+              />
             ))}
           </div>
         </div>

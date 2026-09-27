@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatCurrency } from '../utils/helpers.js';
 
-export const ServiceCard = ({ service, onBook }) => {
+export const ServiceCard = ({ service, onBook, onEdit, isOwner, currentUserId }) => {
+  const isSelf = isOwner || (currentUserId && currentUserId === service.provider_id);
+
   return (
     <div className="card card-hoverable" style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
       <div className="flex-between">
@@ -60,11 +62,19 @@ export const ServiceCard = ({ service, onBook }) => {
       </div>
 
       {/* Actions */}
-      <div className="flex-between" style={{ marginTop: 'auto', paddingTop: '0.5rem' }}>
-        <Link to={`/services/${service.id}`} className="btn btn-secondary btn-sm">
-          Details
-        </Link>
-        {onBook && (
+      <div className="flex-between" style={{ marginTop: 'auto', paddingTop: '0.5rem', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', gap: '0.5rem' }}>
+          <Link to={`/services/${service.id}`} className="btn btn-secondary btn-sm">
+            Details
+          </Link>
+          {isSelf && onEdit && (
+            <button onClick={() => onEdit(service)} className="btn btn-secondary btn-sm">
+              ✏️ Edit
+            </button>
+          )}
+        </div>
+
+        {onBook && !isSelf && (
           <button onClick={() => onBook(service)} className="btn btn-primary btn-sm">
             🗓️ Book Session
           </button>

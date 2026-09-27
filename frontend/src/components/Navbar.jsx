@@ -170,9 +170,6 @@ export const Navbar = () => {
                   <Link to="/edit-profile" style={{ display: 'block', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', color: 'var(--color-text)', textDecoration: 'none', fontSize: '0.875rem' }}>
                     ✏️ Edit Profile
                   </Link>
-                  <Link to="/qr-profile" style={{ display: 'block', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', color: 'var(--color-text)', textDecoration: 'none', fontSize: '0.875rem' }}>
-                    📱 My QR Profile
-                  </Link>
 
                   {isAdmin && (
                     <Link to="/admin" style={{ display: 'block', padding: '0.5rem 0.75rem', borderRadius: 'var(--radius-sm)', color: 'var(--color-primary)', fontWeight: 600, textDecoration: 'none', fontSize: '0.875rem' }}>

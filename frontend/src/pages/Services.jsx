@@ -182,7 +182,13 @@ export const Services = () => {
       ) : services.length > 0 ? (
         <div className="grid-cols-2">
           {services.map((svc) => (
-            <ServiceCard key={svc.id} service={svc} onBook={handleBook} />
+            <ServiceCard
+              key={svc.id}
+              service={svc}
+              currentUserId={user?.id}
+              onBook={handleBook}
+              onEdit={(service) => navigate(`/services/${service.id}`)}
+            />
           ))}
         </div>
       ) : (

@@ -24,7 +24,7 @@ Designed specifically for **B.Tech DBMS demonstration, viva examination, and pro
 
 - **Frontend (React / Vite / Vanilla CSS Design Tokens)**:
   - Clean, component-driven UI with responsive layouts, dark/light theme toggle, custom modal system, and badges.
-  - QR Code Profile generation (`qrcode.react`) and Camera/File QR Scanner (`html5-qrcode`).
+  - Interactive peer networking, skill endorsements, and comprehensive service discovery.
   - Dedicated Admin Control Center (Analytics, Users, Services, Bookings, Moderation, Support Tickets, Audit Logs).
 
 ---

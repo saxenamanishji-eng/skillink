@@ -10,7 +10,7 @@ SkillLink is a skill-based networking, discovery, booking, support, complaint, a
 ## 2. Phase Breakdown
 - [x] **Phase 1**: Environment verification, project skeleton, Express setup, MySQL connection pool.
 - [ ] **Phase 2**: Numbered migrations 001-002, seed data, auth (JWT httpOnly cookie + live DB status check), auth/admin middleware.
-- [ ] **Phase 3**: Profile viewing/editing, privacy serializer (`toPublicProfile`), external profiles, QR generate & scan (with safe URL parser).
+- [ ] **Phase 3**: Profile viewing/editing, privacy serializer (`toPublicProfile`), external profiles, public profile links (with safe URL parser).
 - [ ] **Phase 4**: Connections (with `pair_key` generated column for direction-independent uniqueness), blocks, skill endorsements, and notifications.
 - [ ] **Phase 5**: Discovery & Search ranking using parameterized SQL queries with pagination & relevance scoring.
 - [ ] **Phase 6**: Services, availability scheduling, double-booking prevention transaction (index-range lock + verify-before-commit), booking reviews, notifications.
