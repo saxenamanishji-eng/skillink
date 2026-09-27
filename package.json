@@ -1,0 +1,19 @@
+{
+  "name": "skilllink-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:migrate": "node --prefix backend database/run_migrations.js",
+    "db:seed": "node --prefix backend database/seed.js",
+    "db:test": "node --prefix backend database/tests/run_tests.js",
+    "backend:dev": "npm --prefix backend run dev",
+    "frontend:dev": "npm --prefix frontend run dev"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.4",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.4"
+  }
+}
