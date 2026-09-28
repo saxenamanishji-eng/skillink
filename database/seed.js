@@ -1,6 +1,7 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
+import { createDatabaseConfig } from '../backend/config/databaseConfig.js';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
 
@@ -9,20 +10,28 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, '../backend/.env') });
 
-const dbConfig = {
-  host: process.env.DB_HOST || process.env.MYSQLHOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || process.env.MYSQLPORT || '3306', 10),
-  user: process.env.DB_USER || process.env.MYSQLUSER || 'root',
-  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || '123456',
-  database: process.env.DB_NAME || process.env.MYSQLDATABASE || 'skilllink_db',
-  multipleStatements: true
-};
+const dbConfig = createDatabaseConfig();
+
+function assertSafeDemoSeed() {
+  const host = dbConfig.host.toLowerCase();
+  const isProduction = process.env.NODE_ENV === 'production'
+    || process.env.RAILWAY_ENVIRONMENT
+    || process.env.RAILWAY_PROJECT_ID
+    || /railway|rlwy/i.test(host);
+  if (isProduction) {
+    throw new Error('Demo seeding is disabled for production and Railway databases.');
+  }
+  if (process.env.ALLOW_DESTRUCTIVE_SEED !== 'true') {
+    throw new Error('Set ALLOW_DESTRUCTIVE_SEED=true to explicitly reset a local development database.');
+  }
+}
 
 async function seedDatabase() {
   console.log('Starting SkillLink database seeding...');
   let connection;
 
   try {
+    assertSafeDemoSeed();
     connection = await mysql.createConnection(dbConfig);
     console.log('Connected to MySQL. Clearing existing demo data...');
 
@@ -43,7 +52,9 @@ async function seedDatabase() {
 
     console.log('Inserting seed users...');
     const salt = await bcrypt.genSalt(10);
-    const commonHash = await bcrypt.hash('Password123!', salt);
+    const seedPassword = process.env.SEED_USER_PASSWORD;
+    if (!seedPassword) throw new Error('Set SEED_USER_PASSWORD for local demo accounts.');
+    const commonHash = await bcrypt.hash(seedPassword, salt);
 
     // 1. Users
     const users = [

@@ -2,18 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import mysql from 'mysql2/promise';
+import dotenv from 'dotenv';
+import { createDatabaseConfig } from '../backend/config/databaseConfig.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const dbConfig = {
-  host: process.env.DB_HOST || 'thomas.proxy.rlwy.net',
-  port: parseInt(process.env.DB_PORT || '33561', 10),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || 'WPjhUGzOxVhzrBwVbYmtsSLvveuMEfDA',
-  database: process.env.DB_NAME || 'railway',
-  multipleStatements: true
-};
+dotenv.config({ path: path.join(__dirname, '../backend/.env') });
+
+const dbConfig = createDatabaseConfig();
 
 async function runMigrations() {
   console.log('Starting SkillLink database migrations on Railway MySQL...');

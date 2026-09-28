@@ -45,6 +45,8 @@ Ensure you have installed:
    DB_NAME=skilllink_db
    JWT_SECRET=your_super_secret_jwt_key_at_least_32_characters_long
    FRONTEND_URL=http://localhost:5173
+# Optional comma-separated list for additional explicitly allowed browser origins
+FRONTEND_URLS=
    ```
 3. Start the backend server:
    ```bash
@@ -63,21 +65,9 @@ Ensure you have installed:
 
 ---
 
-## 3. Seed Accounts & Test Credentials
+## 3. Local Seed Data
 
-The database seed provides predefined test accounts with the password: `Password123!`
-
-| Role | Username | Email | Purpose |
-|---|---|---|---|
-| Admin | `admin_user` | `admin@skilllink.edu` | Full platform administration and audit log inspection |
-| User A | `alice_tech` | `alice@skilllink.edu` | Provider offering Web Development & React Tutoring |
-| User B | `bob_coder` | `bob@skilllink.edu` | Customer / Peer looking for skills and booking sessions |
-| User C | `charlie_data` | `charlie@skilllink.edu` | Data Science specialist & peer endorser |
-
-To manually promote any user to Admin via SQL:
-```sql
-UPDATE users SET role = 'admin' WHERE username = 'target_username';
-```
+The seed scripts erase and recreate demo records. They refuse production and Railway databases. For a local development database only, set `ALLOW_DESTRUCTIVE_SEED=true` and a private `SEED_USER_PASSWORD` in the untracked `backend/.env` file before running the seed command. Do not reuse this password on a deployed account.
 
 ---
 

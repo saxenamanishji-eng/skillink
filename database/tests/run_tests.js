@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { createDatabaseConfig } from '../../backend/config/databaseConfig.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -8,14 +9,18 @@ const __dirname = path.dirname(__filename);
 
 dotenv.config({ path: path.join(__dirname, '../../backend/.env') });
 
-const dbConfig = {
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '3306', 10),
-  user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '123456',
-  database: process.env.DB_NAME || 'skilllink_db',
-  multipleStatements: true
-};
+const dbConfig = createDatabaseConfig();
+
+const testPassword = process.env.SEED_USER_PASSWORD;
+if (!testPassword) {
+  throw new Error('Set SEED_USER_PASSWORD to match the local demo seed before running database tests.');
+}
+if (process.env.NODE_ENV === 'production' || /railway|rlwy/i.test(dbConfig.host) || process.env.RAILWAY_PROJECT_ID) {
+  throw new Error('Database tests are disabled against production and Railway databases.');
+}
+if (process.env.ALLOW_DB_TESTS !== 'true') {
+  throw new Error('Set ALLOW_DB_TESTS=true to run the database test suite.');
+}
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -186,7 +191,7 @@ async function runConstraintTests() {
       const loginRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: 'bob_coder', password: 'Password123!' })
+        body: JSON.stringify({ identifier: 'bob_coder', password: testPassword })
       });
       const loginData = await loginRes.json();
       const token = loginData.token;
@@ -219,7 +224,7 @@ async function runConstraintTests() {
           username: tempUsername,
           full_name: 'Temporary User',
           email: `${tempUsername}@skilllink.edu`,
-          password: 'Password123!'
+          password: testPassword
         })
       });
       const regData = await regRes.json();
@@ -260,12 +265,12 @@ async function runConstraintTests() {
       const aliceLogin = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: 'alice_tech', password: 'Password123!' })
+        body: JSON.stringify({ identifier: 'alice_tech', password: testPassword })
       });
       const charlieLogin = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identifier: 'charlie_data', password: 'Password123!' })
+        body: JSON.stringify({ identifier: 'charlie_data', password: testPassword })
       });
       const charlieToken = (await charlieLogin.json()).token;
 

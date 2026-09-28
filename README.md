@@ -89,7 +89,7 @@ CREATE DATABASE IF NOT EXISTS skilllink_db CHARACTER SET utf8mb4 COLLATE utf8mb4
 # Apply migrations
 node database/run_migrations.js
 
-# Seed demo dataset
+# Seed local demo dataset (requires explicit local-only opt-in)
 node database/seed.js
 ```
 
@@ -120,17 +120,9 @@ npm run dev
 
 ---
 
-## 🔑 Demo Credentials
+## Local Demo Data (Development Only)
 
-All test accounts share the password: `Password123!`
-
-| Role | Username | Description |
-| :--- | :--- | :--- |
-| **Admin** | `admin_user` | Full access to `/admin` dashboard, moderation, analytics, audit logs |
-| **Provider / User** | `alice_tech` | Full-stack developer with services, availability, bookings, reviews |
-| **User** | `bob_coder` | Python developer with endorsements & active bookings |
-| **User** | `charlie_data` | Data science provider with service catalog |
-| **User** | `diana_design` | UI/UX designer with portfolio and client network |
+Demo seeding is destructive and is blocked for production and Railway databases. For a local development database only, set `ALLOW_DESTRUCTIVE_SEED=true` and a private `SEED_USER_PASSWORD` in your untracked environment file before running `npm run db:seed`. Do not reuse that password on any deployed account.
 
 ---
 

@@ -34,10 +34,21 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const app = express();
 const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
+const allowedFrontendOrigins = new Set([
+  FRONTEND_URL,
+  ...(process.env.FRONTEND_URLS || '').split(',').map(origin => origin.trim()).filter(Boolean),
+  'http://localhost:5173',
+  'http://127.0.0.1:5173'
+]);
 
 // Middlewares
 app.use(cors({
-  origin: [FRONTEND_URL, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+  origin(origin, callback) {
+    if (!origin || allowedFrontendOrigins.has(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Origin is not allowed by CORS'));
+  },
   credentials: true
 }));
 app.use(express.json());
