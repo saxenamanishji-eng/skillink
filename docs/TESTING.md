@@ -4,17 +4,9 @@ This document details the complete automated and manual testing strategy, test m
 
 ---
 
-## 1. Test Accounts & Demo Credentials
+## 1. Local Test Data
 
-All test accounts use the common development password: `Password123!`
-
-| Username | Role | Status | Description / Seeded Features |
-| :--- | :--- | :--- | :--- |
-| `admin_user` | `admin` | `active` | Full access to Admin Console, Audit Logs, Analytics, User Management |
-| `alice_tech` | `user` | `active` | Web & Full-Stack Developer; has multiple skills, active services, availability, bookings |
-| `bob_coder` | `user` | `active` | Python & Backend Engineer; has peer endorsements and service bookings |
-| `charlie_data` | `user` | `active` | Data Scientist & ML Engineer; has service catalog and reviews |
-| `diana_design` | `user` | `active` | UI/UX Designer; has portfolio services and active client connections |
+The seed and database test scripts can erase or modify records. They refuse production and Railway databases. For local development only, use an untracked environment file with `ALLOW_DESTRUCTIVE_SEED=true`, `ALLOW_DB_TESTS=true`, a private `SEED_USER_PASSWORD`, and local database connection values. Never reuse seed passwords on deployed accounts.
 
 ---
 

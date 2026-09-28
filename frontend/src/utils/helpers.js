@@ -16,6 +16,15 @@ export const formatCurrency = (amount, currency = 'INR') => {
   return `${currency} ${num.toFixed(2)}`;
 };
 
+export const formatPricingType = (pricingType) => {
+  const labels = {
+    hourly: 'Hourly',
+    per_session: 'Per session',
+    fixed_project: 'Fixed project'
+  };
+  return labels[pricingType] || String(pricingType || '').replace(/_/g, ' ');
+};
+
 export const formatDate = (dateString) => {
   if (!dateString) return '';
   const date = new Date(dateString);

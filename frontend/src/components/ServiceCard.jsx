@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { formatCurrency } from '../utils/helpers.js';
+import { formatCurrency, formatPricingType } from '../utils/helpers.js';
 
 export const ServiceCard = ({ service, onBook, onEdit, isOwner, currentUserId }) => {
   const isSelf = isOwner || (currentUserId && currentUserId === service.provider_id);
@@ -16,7 +16,7 @@ export const ServiceCard = ({ service, onBook, onEdit, isOwner, currentUserId })
         <h4 style={{ fontSize: '1.1rem', marginBottom: '0.25rem' }}>{service.title}</h4>
         <div style={{ fontSize: '0.8rem', color: 'var(--color-text-muted)' }}>
           Skill: <strong style={{ color: 'var(--color-text)' }}>{service.skill_name}</strong>
-          {service.pricing_type && ` • Per ${service.pricing_type.replace(/_/g, ' ')}`}
+          {service.pricing_type && ` • ${formatPricingType(service.pricing_type)}`}
           {service.duration_minutes && ` • ${service.duration_minutes} mins`}
         </div>
       </div>
@@ -55,8 +55,8 @@ export const ServiceCard = ({ service, onBook, onEdit, isOwner, currentUserId })
       {/* Mode badges & Cash Notice */}
       <div className="flex-between" style={{ fontSize: '0.75rem', color: 'var(--color-text-muted)' }}>
         <div style={{ display: 'flex', gap: '0.35rem' }}>
-          {service.online_available && <span className="badge badge-success">🌐 Online</span>}
-          {service.in_person_available && <span className="badge badge-primary">📍 In-Person</span>}
+          {Boolean(service.online_available) && <span className="badge badge-success">🌐 Online</span>}
+          {Boolean(service.in_person_available) && <span className="badge badge-primary">📍 In-Person</span>}
         </div>
         <span style={{ fontWeight: 600, color: 'var(--color-text-secondary)' }}>💵 Cash on Delivery</span>
       </div>
